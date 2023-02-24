@@ -1,0 +1,42 @@
+html
+head
+    meta(charset='UTF-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    // <link href="./index.css" rel="stylesheet">
+    style.
+    title Files
+div(style='margin: 0px 50px;')
+    .modal-header(style='display: flex;justify-content:space-between')
+        h4.modal-title
+            span
+                i.fa.fa-delete
+            label#ccaRequestPendingModalEditTitle.ml-2 Files
+    .modal-body
+        .col-12
+            table#table(border='1' style='width: 100%;border-collapse: collapse;')
+                thead
+                    tr
+                        //-th Included
+                        th file name
+                        th Date
+                        th type
+                        th link
+                tbody
+                    each file, index in files
+                        tr
+                            td #{file.original_filename}
+                            td #{new Date(file.createdAt)}
+                            //- td #{sails.config.custom.getReadableDate(obj.createdAt, true)+ ":"+date.getSeconds()+ ":"+date.getMilliSeconds()}
+                            td #{file.type}
+                            td(word-wrap="break-word")
+                                button#open(type='button' onclick='window.open("'+sails.config.custom.base_url + file.new_filepath+'")' ) #{file.new_filepath}
+                                //- button#approvecca(type='button' style='border: none; background-color: green;') APPROVE
+block pageScript
+    //- script(src="https://code.jquery.com/jquery-1.12.4.js")
+    //- script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+    //- script.
+    //-     $('#open').on("click", function (path){
+    //-         window.open(path)
+    //-         return true
+    //-     })

@@ -1,0 +1,24 @@
+mixin display_day(day, day_letter)
+	if day == 'true'
+		span.badge.badge-success #{day_letter}
+	else
+		span.badge.badge-light #{day_letter}
+
+mixin operational_days(days)
+	p
+		each day, i in days
+			case i
+				when 0
+					+display_day(day, 'S')
+				when 1
+					+display_day(day, 'M')
+				when 2  
+					+display_day(day, 'T')
+				when 3
+					+display_day(day, 'W')
+				when 4
+					+display_day(day, 'T')
+				when 5
+					+display_day(day, 'F')
+				when 6
+					+display_day(day, 'S')

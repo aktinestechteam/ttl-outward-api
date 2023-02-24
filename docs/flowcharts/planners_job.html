@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="mermaid.min.css">
+</head>
+<body>
+
+	<div class="mermaid">
+			graph LR
+				create_awb{{Create AWB with AWB No}}
+				create_awb_info{{create AWBinfo with TOTAL pc/wt}}
+				w((W))
+				y((Y))
+				
+				subgraph Manual
+					w==>create_awb
+					create_awb==>create_awb_info
+					create_awb_info==>y
+				end
+				
+				click manual,add_edit_leg click1 "tooltip"
+				
+				classDef process fill: pink
+				class create_awb,create_awb_info,create_blank_leg process
+				
+				classDef xclass fill:yellow
+				class x xclass
+				
+				classDef yclass fill:orange
+				class y yclass
+				
+				classDef exitclass fill:red,color:white;
+				class exit exitclass
+				
+		</div>
+	<div class="mermaid">
+		graph TD
+			update_edit_quantity[Update / Edit AWB Info Qty]
+			add_edit_leg[Add / Edit AWB Leg]
+			y((Y))
+			w((W))
+			
+			subgraph Manual
+				manual==add AWBNo,SRC,DST,Wt,Pc==>w
+				manual-->update_edit_quantity
+				manual-->add_edit_leg
+				add_edit_leg-->y
+				update_edit_quantity-->y
+			end
+			
+			click manual,add_edit_leg click1 "tooltip"
+			
+			classDef process fill: pink
+			class create_awb,create_awb_info,create_blank_leg process
+			
+			classDef xclass fill:yellow
+			class x xclass
+			
+			classDef yclass fill:orange
+			class y yclass
+			
+			classDef exitclass fill:red,color:white;
+			class exit exitclass
+			
+	</div>
+	
+	<div class="mermaid">
+		graph TD
+			awb_from_booklist[Booklist = awbno, src/dest, pc/wt, sector1, sector 2]
+			is_new_booklist{Is New Booklist ?}
+			create_new__booklist{{Create new Booklist}}
+			is_new_awb{Is New Awb ?}
+			void_legs{{Void all the existing Legs of the same Booklist}}
+			update_awb_for_info_booklist{{update AWBinfo for missing details}}
+			empty_leg_exists{Empty Leg exists ?}
+			create_leg_with_pcs{{Create Leg with received Pcs/Wt}}
+			update_leg_with_pcs{{Update Leg with received Pcs/Wt}}
+			y((Y))
+			w((W))
+			
+			subgraph via Booklist
+				awb_from_booklist==>is_new_booklist
+				is_new_booklist==yes==>create_new__booklist
+				create_new__booklist==>is_new_awb
+				is_new_awb==yes==>w
+				w==>create_leg_with_pcs
+				create_leg_with_pcs==>y
+				is_new_awb==No==>update_awb_for_info_booklist
+				update_awb_for_info_booklist==>empty_leg_exists
+				empty_leg_exists==yes==>update_leg_with_pcs
+				update_leg_with_pcs==>y
+				empty_leg_exists==no==>create_leg_with_pcs
+				is_new_booklist==no==>void_legs
+				void_legs==>is_new_awb
+			
+			end
+			
+			classDef process fill: pink
+			class void_legs,create_new__booklist,create_awb_for_info_booklist,update_awb_for_info_booklist process
+			
+			classDef decision fill:cyan
+			class is_new_booklist,is_new_awb,empty_leg_exists decision
+			
+			classDef exitclass fill:red,color:white;
+			class exit exitclass
+			
+			classDef yclass fill:orange
+			class y yclass
+	</div>
+	<div class="mermaid">
+		graph TD
+			awb_from_email[AWB from email]
+			is_new_awb{Is New AWB ?}
+			revised_awb{{This is revised AWB copy}}
+			w((W))
+			exit((EXIT))
+			
+			subgraph via email
+				awb_from_email==>is_new_awb
+				is_new_awb==Yes, pcs = 0==>w
+				is_new_awb==no==>revised_awb
+				revised_awb==>exit
+			end
+			
+			classDef process fill: pink
+			class create_awb_for_booklist,revised_awb process
+			
+			classDef decision fill:cyan
+			class is_new_awb decision
+			
+			classDef exitclass fill:red,color:white;
+			class exit exitclass
+	</div>
+	<div class="mermaid">
+		graph TD
+			check_if_some_qty_is_pending{Any Qty pending for planning ?}
+			create_blank_leg{{Create leg with pcs/wt = 0, dept/ariv = 0}}
+			exit((EXIT))
+			y_elem((Y))
+			
+			subgraph via Y
+				check_if_some_qty_is_pending==yes==>create_blank_leg
+				check_if_some_qty_is_pending==no==>exit
+				create_blank_leg==>exit
+				
+				y_elem==>check_if_some_qty_is_pending
+			end
+			
+			classDef process fill: pink
+			class create_blank_leg process
+			
+			classDef decision fill:cyan
+			class check_if_some_qty_is_pending decision
+			
+			classDef exitclass fill:red,color:white;
+			class exit exitclass
+			
+			classDef xclass fill:yellow
+			class x_elem xclass
+			
+			classDef yclass fill:orange
+			class y_elem yclass
+	</div>
+	
+	<!--script src="https://unpkg.com/mermaid@8.4/dist/mermaid.min.js"></script-->
+	<script src="mermaid.8.4.2.min.js">
+		mermaid.initialize({
+			securityLevel: 'loose',
+			theme: 'forest',
+			arrowMarkerAbsolute: false,
+			startOnLoad:true,
+			flowchart:{
+				htmlLabels:true,
+				curve: 'basis'	//	linear, basis, cardinal
+			},
+			sequence: {
+				useMaxWidth:true,
+		}
+	});</script>
+</body>
+</html>

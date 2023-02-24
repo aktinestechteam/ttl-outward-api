@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    
+	<title>Sails React App</title>
+    
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+	<link rel="icon" type="image/png" sizes="180x180" href="/assets/images/client_logo.png">
+	
+    <link href="/assets/libs/magnific-popup/dist/magnific-popup.css" rel="stylesheet">
+    <link href="/assets/dist/css/style.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/dist/css/custom.css" type="text/css" rel="stylesheet">
+    <link href="/assets/dist/css/fakeLoader.css" type="text/css" rel="stylesheet">
+    <link href="/assets/dist/css/sweetalert2.min.css" type="text/css" rel="stylesheet">
+    
+	<link href="/assets/libs/select2/dist/css/select2.min.css" type="text/css" rel="stylesheet">
+    <link href='/assets/libs/fullcalendar/dist/fullcalendar.min.css' type="text/css" rel='stylesheet'>
+    <link href='/assets/extra-libs/calendar/calendar.css' type="text/css" rel='stylesheet'>
+	<link href="/assets/libs/timeline/timeline.css" type="text/css" rel='stylesheet'>
+	<link href="mermaid.min.css" type="text/css" rel="stylesheet">
+</head>
+
+<body id="root" class='bootstrap-collapse'>
+    <script type='text/javascript'></script>
+    <script src="/assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="/assets/dist/js/jquery-ui.js"></script>
+    <script src="/assets/dist/js/promise.min.js"></script>
+    <script src="/assets/dist/js/bootstrap.min.js"></script>
+    <script src="/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+    <script src="/assets/extra-libs/sparkline/sparkline.js"></script>
+    <script src="/assets/dist/js/waves.js"></script>
+    <script src="/assets/js/validation.js"></script>
+    <script src="/assets/dist/js/sidebarmenu.js"></script>
+    <script src="/assets/dist/js/custom.min.js"></script>
+    <script src="/assets/dist/js/sweetalert2.min.js"></script>
+    <script src="/assets/libs/toastr/build/toastr.min.js"></script>
+    <script src="/assets/libs/magnific-popup/dist/jquery.magnific-popup.min.js"></script>
+    <script src="/assets/libs/magnific-popup/meg.init.js"></script>
+    <script src='/assets/dist/js/fakeLoader.js'></script>
+    <script type="text/javascript" src="/assets/dist/js/datatables.min.js"></script>
+    <script type="text/javascript" src="/assets/js/dependencies/sails.io.js" autoConnect=false>
+    	io.sails.url = 'http://localhost:1337';
+	</script>
+    <script src='/assets/libs/moment/min/moment.min.js'>
+	</script>
+	
+    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.23/moment-timezone-with-data-2012-2022.min.js"></script-->
+    <script src="/assets/libs/moment/moment-timezone-with-data-2012-2022.min.js"></script>
+    <script src='/assets/libs/fullcalendar/dist/fullcalendar.min.js'></script>
+	<script src='/assets/dist/js/pages/calendar/cal-init.js'></script>
+	<script src="/assets/libs/select2/dist/js/select2.min.js"></script>
+	<script type="text/javascript" src='/static_data/filesToBeInclude/reason_records.js'></script>
+	<script type="text/javascript" src='/static_data/filesToBeInclude/shc_records.js'></script>
+	<script type="text/javascript" src='/static_data/filesToBeInclude/station_records.js'></script>
+	<script type="text/javascript" src='/static_data/filesToBeInclude/time_zones.js'></script>
+    <!--script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.core.min.js"></script-->
+    <script src='/assets/extra-libs/Lodash/lodash.min.js'></script>
+	<script src="/assets/libs/timeline/timeline.js"></script>
+	<script src="/assets/libs/mermaid/mermaid.8.4.2.min.js"></script>
+
+
+    <script>
+        function swal_message(message, type) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                background: '#419c3d',
+                icon: 'success',
+                html: '<span class="text-white">'+message+'</span>',
+                showConfirmButton: false,
+                timer: 2500
+            });
+        }
+        
+        function swal_success(message) {
+            Swal.fire({
+                title: message,
+                showConfirmButton: false,
+                width: 600,
+                padding: '3em',
+                background: 'rgba(255,255,255,0.8)',
+                backdrop: `rgba(84,218,46,0.4)
+                    left top
+                    no-repeat`,
+                timer: 500
+            });
+        }
+
+        function swal_info(message) {
+            Swal.fire({
+                title: message,
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                width: 600,
+                padding: '3em',
+                background: 'rgba(255,255,255,0.8)',
+                backdrop: `rgba(84,46,218,0.4)
+                    left top
+                    no-repeat`,
+            });
+        }
+
+        function swal_close() {
+            Swal.close();
+        }
+        
+        function swal_error(message) {
+            Swal.fire({
+                title: message,
+                width: 600,
+                padding: '3em',
+                background: 'rgba(255,255,255,0.8)',
+                backdrop: `rgba(218,84,46,0.4)
+                    left top
+                    no-repeat`
+            })
+        }
+        /*function showFakeLoader2() {
+            $("#fakeloader").fadeIn();
+        }
+
+        function socketShowFakeLoader() {
+            $("#socketFakeloader").fadeIn();
+        }
+
+        function showFakeLoader(modalname, pagetoredirect) {
+            $('#' + modalname).modal('hide');
+            $("#fakeloader").fadeIn();
+            location.href = pagetoredirect;
+        }
+
+        $("#socketFakeloader").fakeLoader({
+            timeToHide: 0, //Time in milliseconds for fakeLoader disappear
+            zIndex: "999", //Default zIndex
+            spinner: "spinner1", //Options: 'spinner1', 'spinner2', 'spinner3', 'spinner4', 'spinner5', 'spinner6', 'spinner7'
+            bgColor: "#000000bb", //Hex, RGB or RGBA colors
+        });
+
+        $("#fakeloader").fakeLoader({
+            timeToHide: 0, //Time in milliseconds for fakeLoader disappear
+            zIndex: "999", //Default zIndex
+            spinner: "spinner6", //Options: 'spinner1', 'spinner2', 'spinner3', 'spinner4', 'spinner5', 'spinner6', 'spinner7'
+            bgColor: "#000000cc", //Hex, RGB or RGBA colors
+        });
+
+        function hideFakeLoader() {
+            mySocket.on('connect', async function onConnect() {
+                console.log("Socket Re connected!");
+                $("#socketFakeloader").fadeOut();
+            });
+        }
+
+        function hideFakeLoader2() {
+            $("#fakeloader").fadeOut();
+        }
+
+        function checkConnection() {
+            $("#fakeloader").fadeOut();
+        }*/
+    </script>
+</body>
+<!-- 	==============================================================-->
+<!-- All Jquery-->
+<!-- ==============================================================-->
+<!--script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js')-->
+
+
+</html>

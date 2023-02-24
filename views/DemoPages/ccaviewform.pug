@@ -1,0 +1,452 @@
+html
+head
+    meta(charset='UTF-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    // <link href="./index.css" rel="stylesheet">
+    style(type="text/css").
+        @media print {.print {display: none;}}
+    title CCA for #{formData.cca_form_data.legops_record.awb_no}
+div(style='margin: 0px 50px;')
+    if(readOnly == false)
+        div.print
+            div(style='display: flex;justify-content:space-between')
+                h4.modal-title
+                    span
+                        i.fa.fa-delete
+                    label#ccaRequestPendingModalEditTitle.ml-2 CCA Request Pending Form
+                input#reason(type='input' style='' placeholder="Reason", value="CCA is approved")
+                button#approvecca(type='button' style='border: none; background-color: green;') APPROVE
+                button#rejectcca(type='button' style='border: none; background-color: red;') REJECT
+                    //- |#{JSON.stringify(formData)}
+                //button.close(type='button' style='border: none; background-color: white;') &times;
+    div
+        .col-12
+            label.control-label.print Existing CCA Records
+            table.print(border='1' style='width: 100%;border-collapse: collapse;')
+                thead
+                    tr
+                        //-th Included
+                        th Raised By
+                        th Department
+                        th CCA
+                tbody
+                    each request in formData.cca_request
+                        tr
+                            //-td #{request.id}
+                            td #{request.raised_by}
+                            td #{request.raised_by_dept}
+                            //- td #{request.reason[0].main_reason}
+                            td #{request.reason.map(cca=>"["+cca.main_reason + (cca.sub_reason1? " - " + cca.sub_reason1:"") + (cca.sub_reason2?" - " + cca.sub_reason2:"") + (cca.sub_reason3.length>0?" - " + cca.sub_reason3:"")+"]")}
+            table(border='1' style='width: 100%;border-collapse: collapse;')
+                tbody
+                    tr
+                        // msoIgnore: vglayout;
+                        td(colspan='10' rowspan='5' valign='top' align='left')
+                            span(style=' position: absolute; z-Index: 1; margin-left: 17px; margin-top: 2px; width: 127px; height: 49px')
+                                img(src='/images/cca_ba_logo.png' width='127' height='49' alt='')
+                    tr(style='font-size: 10px; height: 10px')
+                        td Date of Issue
+                        -var dateOfIssue = sails.config.custom.getReadableDate(formData.createdAt)
+                        td
+                            #ccaRequestModalDateOfIssueInput=dateOfIssue
+                    tr(style='font-size: 10px; height: 10px')
+                        td Place of Issue
+                        td
+                            #ccaRequestModalPlaceOfIssueInput=formData.station
+                    tr(style='font-size: 10px; height: 10px')
+                        td Number
+                        td
+                            #ccaRequestModalNumberInput=formData.cca_no
+                    tr(style='font-size: 10px; height: 10px')
+                        td CCA Ref
+                        td=formData.cca_form_data.ref_cca_no
+                    //-each flight in formData.cca_form_data.flightRecord
+                        -console.log(flight);
+                    tr(style='font-size: 10px; height: 10px')
+                        th(colspan='4') To 
+                        th Flight No
+                        th Date
+                    -for (var x = 0; x < formData.cca_form_data.flightRecord.length; x++)
+                        - let flight = formData.cca_form_data.flightRecord[x];
+                        - if(!flight["to"+x]) continue;
+                        tr(style='font-size: 10px;')
+                            td(colspan='4')
+                                #ccaRequestModalToFlightNoInput=flight["to"+x]
+                            td
+                                #ccaRequestModalToInput=flight["flightNo"+x]
+                            td
+                                #ccaRequestModalToDateInput=(flight["date"+x] ? (new Date(flight["date"+x]).toLocaleDateString()) : "")
+
+
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='12')
+                            | Will transfer stations please fill in lines 2 or 3 as appropriate and re-forward this form immediately to next carrier.
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='12') The slip below must only be filled in and returned to issuing carrier
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4') Consignor&apos;s name and address:
+                        td(colspan='4') Consignee address:
+                        td(colspan='4') NOTIFY:
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4')
+                            textarea#ccaRequestModalConsignorAddressTextarea(disabled placeholder='Editable' style=' width: 100%; height:100px;' required='' row='5' name='c_name_address')
+                                |#{formData.cca_form_data.c_name_address}
+                        td(colspan='4')
+                            textarea#ccaRequestModalConsigneeAddressTextarea(disabled placeholder='Editable' style=' width: 100%; height:100px' required='' row='5' name='c_address')
+                                |#{formData.cca_form_data.c_address}
+                        td(colspan='4')
+                            textarea#ccaRequestModalNotifyTextarea(disabled placeholder='Editable' style=' width: 100%; height:100px' row='5' name='notify')
+                                |#{formData.cca_form_data.notify}
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='5') AWB No.
+                        td From
+                        td To
+                        td Date
+                        td Received From:
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='5')
+                            input#ccaRequestModalAwbNoInput(disabled placeholder='Editable' style=' width: 100% ' name='ccaRequestModalRefAwbNoInput' value = formData.cca_form_data.legops_record.awb_no)
+                        td
+                            input#ccaRequestModalfromInput(disabled placeholder='Editable' style=' width: 100% ' name='ccaRequestModalfromInput' value = formData.cca_form_data.legops_record.from)
+                        td
+                            input#ccaRequestModaltoInput(disabled placeholder='Editable' style=' width: 100% ' name='ccaRequestModaltoInput' value = formData.cca_form_data.legops_record.to)
+                        td
+                            - var date = new Date(formData.cca_form_data.legops_record.date)
+                            - var dateFormat = date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear();
+                            input#ccaRequestModalDateInput(disabled placeholder='Editable' style=' width: 100% ' name='ccaRequestModalDateInput' value = dateFormat)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(rowspan='2' colspan='4') Currency&#x9;&#x9;INR
+                        td.text-center(colspan='4') Revised/Corrected Charges
+                        td.text-center(colspan='4') Original/Incorrect Charges
+                    tr(style='font-size: 10px; height: 10px')
+                        td.text-center(colspan='2')  Prepaid
+                        td.text-center(colspan='2')  Collect
+                        td.text-center(colspan='2')  Prepaid
+                        td.text-center(colspan='2')  Collect
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4') Charges Due
+                        td.text-center Carrier
+                        td.text-center Agent
+                        td.text-center Carrier
+                        td.text-center Agent
+                        td.text-center Carrier
+                        td.text-center Agent
+                        td.text-center Carrier
+                        td.text-center Agent
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4') Weight Charge
+                        td
+                            input#ccaRequestModalWeightRevisedCorrectedPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='revised_prep_wc_carrier' value = formData.cca_form_data.revised_prepaid_wc_carrier)
+                        td
+                            input#ccaRequestModalWeightRevisedCorrectedPrepaidAgentChargesInput(disabled placeholder='Editableb' style=' width: 100% ' name='revised_prep_wc_agent' value = formData.cca_form_data.revised_prepaid_wc_agent)
+                        td
+                            input#ccaRequestModalWeightRevisedCorrectedCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rcwc_carrier' value = formData.cca_form_data.revised_collect_wc_carrier)
+                        td
+                            input#ccaRequestModalWeightRevisedCorrectedCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rcwc_agent' value = formData.cca_form_data.revised_collect_wc_agent)
+                        td
+                            input#ccaRequestModalWeightOriginalIncorrectPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='opwc_carrier' value = formData.cca_form_data.original_prepaid_wc_carrier)
+                        td
+                            input#ccaRequestModalWeightOriginalIncorrectPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='opwc_agent' value = formData.cca_form_data.original_prepaid_wc_agent)
+                        td
+                            input#ccaRequestModalWeightOriginalIncorrectCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='ocwc_carrier' value = formData.cca_form_data.original_collect_wc_carrier)
+                        td
+                            input#ccaRequestModalWeightOriginalIncorrectCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='ocwc_agent' value = formData.cca_form_data.original_collect_wc_agent)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4') Valuation Charge
+                        td
+                            input#ccaRequestModalValuationRevisedCorrectedPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rpvc_carrier' value = formData.cca_form_data.revised_prepaid_vc_carrier)
+                        td
+                            input#ccaRequestModalValuationRevisedCorrectedPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rpvc_agent' value = formData.cca_form_data.revised_prepaid_vc_agent)
+                        td
+                            input#ccaRequestModalValuationRevisedCorrectedCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rcvc_carrier' value = formData.cca_form_data.revised_collect_vc_carrier)
+                        td
+                            input#ccaRequestModalValuationRevisedCorrectedCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rcvc_agent' value = formData.cca_form_data.revised_collect_vc_agent)
+                        td
+                            input#ccaRequestModalValuationOriginalIncorrectPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='opvc_carrier' value = formData.cca_form_data.original_prepaid_vc_carrier)
+                        td
+                            input#ccaRequestModalValuationOriginalIncorrectPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='opvc_agent' value = formData.cca_form_data.original_prepaid_vc_agent)
+                        td
+                            input#ccaRequestModalValuationOriginalIncorrectCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='ocvc_carrier' value = formData.cca_form_data.original_collect_vc_carrier)
+                        td
+                            input#ccaRequestModalValuationOriginalIncorrectCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='ocvc_agent' value = formData.cca_form_data.original_collect_vc_agent)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4') Tax
+                        td
+                            input#ccaRequestModalTaxRevisedCorrectedPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rptax_carrier' value = formData.cca_form_data.revised_prepaid_Tax_carrier)
+                        td
+                            input#ccaRequestModalTaxRevisedCorrectedPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rptax_agent' value = formData.cca_form_data.revised_prepaid_Tax_Agent)
+                        td
+                            input#ccaRequestModalTaxRevisedCorrectedCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rctax_carrier' value = formData.cca_form_data.revised_collect_Tax_carrier)
+                        td
+                            input#ccaRequestModalTaxRevisedCorrectedCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rctax_gent' value = formData.cca_form_data.revised_collect_Tax_Agent)
+                        td
+                            input#ccaRequestModalTaxOriginalIncorrectPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='optax_carrier' value = formData.cca_form_data.original_prepaid_Tax_carrier)
+                        td
+                            input#ccaRequestModalTaxOriginalIncorrectPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='optax_agent' value = formData.cca_form_data.original_prepaid_Tax_agent)
+                        td
+                            input#ccaRequestModalTaxOriginalIncorrectCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='octax_carrier' value = formData.cca_form_data.original_collect_Tax_carrier)
+                        td
+                            input#ccaRequestModalTaxOriginalIncorrectCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='octax_agent' value = formData.cca_form_data.original_collect_Tax_agent)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4') Clearance And Handling
+                        td
+                            input#ccaRequestModalClearanceAndHandlingRevisedCorrectedPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rp_clear_hand_carrier' value = formData.cca_form_data.revised_prepaid_Clearance_And_Handl_carrier)
+                        td
+                            input#ccaRequestModalClearanceAndHandlingRevisedCorrectedPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rp_clear_hand_agent' value = formData.cca_form_data.revised_prepaid_Clearance_And_Handl_Agent)
+                        td
+                            input#ccaRequestModalClearanceAndHandlingRevisedCorrectedCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rc_clear_hand_carrier' value = formData.cca_form_data.revised_collect_Clearance_And_Handl_carrier)
+                        td
+                            input#ccaRequestModalClearanceAndHandlingRevisedCorrectedCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rc_clear_hand_agent' value = formData.cca_form_data.revised_collect_Clearance_And_Handl_Agent)
+                        td
+                            input#ccaRequestModalClearanceAndHandlingOriginalIncorrectPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='op_clear_hand_carrier' value = formData.cca_form_data.original_prepaid_Clearance_And_Handl_carrier)
+                        td
+                            input#ccaRequestModalClearanceAndHandlingOriginalIncorrectPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='op_clear_hand_agent' value = formData.cca_form_data.original_prepaid_Clearance_And_Handl_agent)
+                        td
+                            input#ccaRequestModalClearanceAndHandlingOriginalIncorrectCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='oc_clear_hand_carrier' value = formData.cca_form_data.original_collect_Clearance_And_Handl_carrier)
+                        td
+                            input#ccaRequestModalClearanceAndHandlingOriginalIncorrectCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='oc_clear_hand_agent' value = formData.cca_form_data.original_collect_Clearance_And_Handl_agent)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4') Disbursements
+                        td
+                            input#ccaRequestModalDisbursementsRevisedCorrectedPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rp_disbursement_carrier' value = formData.cca_form_data.revised_prepaid_Disbursements_carrier)
+                        td
+                            input#ccaRequestModalDisbursementsRevisedCorrectedPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rp_disbursement_agent' value = formData.cca_form_data.revised_prepaid_Disbursements_Agent)
+                        td
+                            input#ccaRequestModalDisbursementsRevisedCorrectedCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rc_disbursement_carrier' value = formData.cca_form_data.revised_collect_Disbursements_carrier)
+                        td
+                            input#ccaRequestModalDisbursementsRevisedCorrectedCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rc_disbursement_agent' value = formData.cca_form_data.revised_collect_Disbursements_Agent)
+                        td
+                            input#ccaRequestModalDisbursementsOriginalIncorrectPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='op_disbursement_carrier' value = formData.cca_form_data.original_prepaid_Disbursements_carrier)
+                        td
+                            input#ccaRequestModalDisbursementsOriginalIncorrectPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='op_disbursement_agent' value = formData.cca_form_data.original_prepaid_Disbursements_agent)
+                        td
+                            input#ccaRequestModalDisbursementsOriginalIncorrectCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='oc_disbursement_carrier' value = formData.cca_form_data.original_collect_Disbursements_carrier)
+                        td
+                            input#ccaRequestModalDisbursementsOriginalIncorrectCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='oc_disbursement_agent' value = formData.cca_form_data.original_collect_Disbursements_agent)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4') Disbursement Fee
+                        td
+                            input#ccaRequestModalDisbursementFeeRevisedCorrectedPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rp_disbursement_fee_carrier' value = formData.cca_form_data.revised_prepaid_Disbursement_Fee_carrier)
+                        td
+                            input#ccaRequestModalDisbursementFeeRevisedCorrectedPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rp_disbursement_fee_agent' value = formData.cca_form_data.revised_prepaid_Disbursement_Fee_Agent)
+                        td
+                            input#ccaRequestModalDisbursementFeeRevisedCorrectedCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rc_disbursement_fee_carrier' value = formData.cca_form_data.revised_collect_Disbursement_Fee_carrier)
+                        td
+                            input#ccaRequestModalDisbursementFeeRevisedCorrectedCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rc_disbursement_fee_agent' value = formData.cca_form_data.revised_collect_Disbursement_Fee_Agent)
+                        td
+                            input#ccaRequestModalDisbursementFeeOriginalIncorrectPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='op_disbursement_fee_carrier' value = formData.cca_form_data.original_prepaid_Disbursement_Fee_carrier)
+                        td
+                            input#ccaRequestModalDisbursementFeeOriginalIncorrectPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='op_disbursement_fee_agent' value = formData.cca_form_data.original_prepaid_Disbursement_Fee_agent)
+                        td
+                            input#ccaRequestModalDisbursementFeeOriginalIncorrectCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='oc_disbursement_fee_carrier' value = formData.cca_form_data.original_collect_Disbursement_Fee_carrier)
+                        td
+                            input#ccaRequestModalDisbursementFeeOriginalIncorrectCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='oc_disbursement_fee_agent' value = formData.cca_form_data.original_collect_Disbursement_Fee_agent)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4') Other Charge
+                        td
+                            input#ccaRequestModalOtherRevisedCorrectedPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rp_ocharge_carrier' value = formData.cca_form_data.revised_prepaid_Other_Charge_carrier)
+                        td
+                            input#ccaRequestModalOtherRevisedCorrectedPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rp_ocharge_agent' value = formData.cca_form_data.revised_prepaid_Other_Charge_Agent)
+                        td
+                            input#ccaRequestModalOtherRevisedCorrectedCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rc_ocharge_carrier' value = formData.cca_form_data.revised_collect_Other_Charge_carrier)
+                        td
+                            input#ccaRequestModalOtherRevisedCorrectedCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='rc_ocharge_agent' value = formData.cca_form_data.revised_collect_Other_Charge_Agent)
+                        td
+                            input#ccaRequestModalOtherOriginalIncorrectPrepaidCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='op_ocharge_carrier' value = formData.cca_form_data.original_prepaid_Other_Charge_carrier)
+                        td
+                            input#ccaRequestModalOtherOriginalIncorrectPrepaidAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='op_ocharge_agent' value = formData.cca_form_data.original_prepaidOther_Charge_agent)
+                        td
+                            input#ccaRequestModalOtherOriginalIncorrectCollectCarrierChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='oc_ocharge_carrier' value = formData.cca_form_data.original_collect_Other_Charge_carrier)
+                        td
+                            input#ccaRequestModalOtherOriginalIncorrectCollectAgentChargesInput(disabled placeholder='Editable' style=' width: 100% ' name='oc_ocharge_agent' value = formData.cca_form_data.original_collect_Other_Charge_agent)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4') Amendment fee
+                        td
+                            input#ccaRequestModalAmendmentFeeRevisedCorrectedPrepaidCarrierChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' name='rp_amendment_fee_carrier' value = formData.cca_form_data.revised_prepaid_Amendment_fee_carrier)
+                        td
+                            input#ccaRequestModalAmendmentFeeRevisedCorrectedPrepaidAgentChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' name='rp_amendment_fee_agent' value = formData.cca_form_data.revised_prepaid_Amendment_fee_Agent)
+                        td
+                            input#ccaRequestModalAmendmentFeeRevisedCorrectedCollectCarrierChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' name='rc_amendment_fee_carrier' value = formData.cca_form_data.revised_collect_Amendment_fee_carrier)
+                        td
+                            input#ccaRequestModalAmendmentFeeRevisedCorrectedCollectAgentChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' name='rc_amendment_fee_agent' value = formData.cca_form_data.revised_collect_Amendment_fee_Agent)
+                        td
+                            input#ccaRequestModalAmendmentFeeOriginalIncorrectPrepaidCarrierChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' name='op_amendment_fee_carrier' value = formData.cca_form_data.original_prepaid_Amendment_fee_carrier)
+                        td
+                            input#ccaRequestModalAmendmentFeeOriginalIncorrectPrepaidAgentChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' name='op_amendment_fee_agent' value = formData.cca_form_data.original_prepaidAmendment_fee_agent)
+                        td
+                            input#ccaRequestModalAmendmentFeeOriginalIncorrectCollectCarrierChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' name='oc_amendment_fee_carrier' value = formData.cca_form_data.original_collect_Amendment_fee_carrier)
+                        td
+                            input#ccaRequestModalAmendmentFeeOriginalIncorrectCollectAgentChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' name='oc_amendment_fee_agent' value = formData.cca_form_data.original_collect_Amendment_fee_agent)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='12')
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4') Total
+                        td
+                            input#ccaRequestModalTotalRevisedCorrectedPrepaidCarrierChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' value = formData.cca_form_data.revised_Prepaid_carrier_total)
+                        td
+                            input#ccaRequestModalTotalRevisedCorrectedPrepaidAgentChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' value = formData.cca_form_data.revised_Prepaid_Agent_total)
+                        td
+                            input#ccaRequestModalTotalRevisedCorrectedCollectCarrierChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' value = formData.cca_form_data.revised_collect_carrier_total)
+                        td
+                            input#ccaRequestModalTotalRevisedCorrectedCollectAgentChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' value = formData.cca_form_data.revised_collect_Agent_total)
+                        td
+                            input#ccaRequestModalTotalOriginalIncorrectPrepaidCarrierChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' value = formData.cca_form_data.original_prepaid_carrier_total)
+                        td
+                            input#ccaRequestModalTotalOriginalIncorrectPrepaidAgentChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' value = formData.cca_form_data.original_prepaid_Agent_total)
+                        td
+                            input#ccaRequestModalTotalOriginalIncorrectCollectCarrierChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' value = formData.cca_form_data.original_collect_carrier_total)
+                        td
+                            input#ccaRequestModalTotalOriginalIncorrectCollectAgentChargesInput(disabled placeholder='NoEditable' style=' width: 100% ' value = formData.cca_form_data.original_collect_agent_total)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='4') Remarks:
+                        td(colspan='8')
+                            textarea#ccaRequestModalRemarksTextarea(disabled placeholder='Editable for cca reasons' row='5' style=' width: 100% ' name='remarks')
+                                |#{formData.cca_form_data.Remarks}
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='12')
+                            | Please correct your documents accordingly and confirm action taken by returning to us, duly signed, the slip below. Thank you.
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='6') Distribution:
+                        td(colspan='6') Yours Faithfully,
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='2') Original-
+                        td(colspan='4') (Shipper)
+                        td(colspan='6') British Airways World Cargo
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='2') Copy 1-
+                        td(colspan='4') (For Accounting Department of Issuing Carrier)
+                        td(colspan='6')
+                            input#ccaRequestModalLoginStationInput(disabled placeholder='NoEditable ' style=' width: 100% ' name='acc_dep_issue_carrier' value = formData.cca_form_data.account_Dep_of_Issuing_carrier)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='2') Copy 2-
+                        td(colspan='4') (For First Carrier)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='2') Copy 3-
+                        td(colspan='4') (For Second Carrier)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='2') Copy 4-
+                        td(colspan='4') (For Third Carrier)
+                        td(colspan='3') Address
+                        td(colspan='3') Email
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='2') Copy 5-
+                        td(colspan='4') (For Cargo Department of Carrier issuing CCA)
+                        td(colspan='3')
+                            input#ccaRequestModalAuthorityNameInput(disabled placeholder='NoEditable ' style=' width: 100% ' name='cargo_dep_issue_carrier' value = formData.cca_form_data.cargo_Dep_of_Issuing_carrier)
+                        td(colspan='3')
+                            input#ccaRequestModalAuthorityEmailInput(disabled placeholder='NoEditable ' style=' width: 100% ' name='cargo_dep_issue_carrier_email' value = formData.cca_form_data.cargo_Dep_of_Issuing_carrier_email)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='2') Copy 6-
+                        td(colspan='4') (For CASS Settlement Office)
+                        td(colspan='4')
+                            input#ccaRequestModalDesignationInput(disabled placeholder='NoEditable' style=' width: 100% ' name='cass_settlement_office' value = formData.cca_form_data.cass_settlement_office)
+                        td(colspan='2') Signature
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='2') Copy 7-
+                        td(colspan='4') (For CASS Agent/Recipient)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='12')
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='2' rowspan='8') To
+                        td(colspan='4' rowspan='8')
+                            textarea#ccaRequestModalToBAAddressTextarea(disabled placeholder='NoEditable' style=' width: 100%; Height:150px ' name='to' )
+                                |#{formData.cca_form_data.to}
+                        td(colspan='2') From
+                        td(colspan='3') British Airways World Cargo
+                        td (Airline)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='6')
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='2') At
+                        td(colspan='3')
+                            input#ccaRequestModalAtStationInput(disabled placeholder='NoEditable ' style=' width: 100% ' name='at' value = formData.cca_form_data.at)
+                        td (Station)
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='6')
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='6') Date
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='6')
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='6')
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='6') We herewith confirm having corrected our documents and 
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='2') Ref: AWB No.
+                        td(colspan='4')
+                            input#ccaRequestModalRefAwbNoInput(disabled placeholder='NoEditable' style=' width: 100% ' name='ref_awb_no' value = formData.awb_no)
+                        td(colspan='6') taken the necessary actions as per your instructions.
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='12')
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='2') Ref:CCA No.
+                        td(colspan='4')
+                            input#ccaRequestModalRefCCANoInput(disabled placeholder='NoEditable' style=' width: 100% ' name='ref_cca_no' value = formData.cca_form_data.ref_cca_no)
+                        td(colspan='6') Carrier&apos;s Stamp ____________________________________
+                    tr(style='font-size: 10px; height: 10px')
+                        td(colspan='12')
+block pageScript
+    script(src="https://code.jquery.com/jquery-1.12.4.js")
+    script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+    script.
+        $('#approvecca').on("click", function (){
+            var reason = $('#reason').val()
+            if($('#reason').val().length == 0){
+                alert("Please enter a valid reason")
+            }
+            else{
+                var url=window.location.toString()
+                url = url.split('/')
+                var id = url[4]
+                var approvalUrl = "#{sails.config.custom.base_url}/ccaaprroval/"+id+"/approve"
+                $.post(approvalUrl, {reason: reason}).done(function(data) {
+                    //alert(data)
+                    location.reload();
+                })
+                //- $.ajax({
+                //-     url: approvalUrl,
+                //-     type: 'POST',
+                //-     processData: false, // important
+                //-     contentType: false, // important
+                //-     dataType : 'application/json',
+                //-     data: {reason: reason}
+                //- }).done(function(data) {
+                //-     alert(data)
+                //- }).fail(function(jqXHR, status) {
+                //-     alert("Approval Failed")
+                //- });
+            }
+            return true;
+        })
+        $('#rejectcca').on("click", function (){
+            var reason = $('#reason').val()
+            if($('#reason').val().length == 0){
+                alert("Please enter a valid reason")
+            }
+            else{
+                var url=window.location.toString()
+                url = url.split('/')
+                var id = url[4]
+                //console.log(url)
+                var rejectUrl = "#{sails.config.custom.base_url}/ccaaprroval/"+id+"/reject"
+                //console.log(rejectUrl)
+                $.post(rejectUrl, {reason: reason}).done(function(data) {
+                    //alert(data)
+                    location.reload();
+                })
+                //- $.ajax({
+                //-     url: rejectUrl,
+                //-     type: 'POST',
+                //-     processData: false, // important
+                //-     contentType: false, // important
+                //-     dataType : 'json',
+                //-     data: {reason: reason}
+                //- }).done(function(data) {
+                //-     alert(data)
+                //- }).fail(function(jqXHR, status) {
+                //-     alert("Reject Failed")
+                //- });
+            }
+            return true;
+        })

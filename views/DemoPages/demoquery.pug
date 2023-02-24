@@ -1,0 +1,108 @@
+extends ../layouts/matrix_layout.pug
+
+block variables
+	- var activePage = 'blank-page'
+	- var activeGroup = 'pages'
+
+block content
+
+	.card.p-2
+		.row
+			.col-md-12.text-center
+				h4 Add New Query
+			.col
+			.col-md-6
+				textarea#add_query.input-group(name="add_query" rows="3")
+			//.col-md-3.my-auto
+			button.btn.btn-success Add New Query
+			.col
+
+	#accordionExample.accordion
+		.card.m-b-0
+			#headingOne.card-header.bg-dark.text-white
+				.mb-0
+					a(data-toggle='collapse', data-target='#collapseOne', aria-expanded='true', aria-controls='collapseOne').row
+						.col-md-1
+							h1
+								i.m-r-5.fa.fa-check-circle.text-success.pr-3(aria-hidden='true')
+						.col-md-2
+							.badge.badge-info 23-Aug-2020, 11:09
+							.badge.badge-warning Amul Patel
+						.col-md-9
+							div
+								.mr-3.badge.badge-danger CLOSED
+								span.text-warning QueryNumber/2020/000325
+							span Customer Query 1 A B C D E F G H I J K L M N O P Q R S T U V W X Y Z Customer Query 1 A B C D E F G H I J K L M N O P Q
+						
+			#collapseOne.collapse.show(aria-labelledby='headingOne', data-parent='#accordionExample').bg-secondary
+				.timeline
+					.timeline__wrap
+						.timeline__items
+							.timeline__item.timeline__item--right.animated.fadeIn(side="right")
+								.timeline__content.p-0
+									.card-body
+										.row
+											.col-md-12.text-center
+												h4 Add New Comment
+											.col
+											.col-md-6
+												textarea#add_comment.input-group(name="add_comment" rows="3")
+											.col-md-3
+												button.btn.btn-danger.my-1 CLOSE THIS QUERY
+												button.btn.btn-success.my-1 Add New Comment
+											.col
+										
+							.timeline__item.timeline__item--right.animated.fadeIn(side="right")
+								.timeline__content.p-0
+									.card-body.row
+										.col-md-2
+											div
+												small.font-weight-bold 26-Aug-2020, 12:32
+											div
+												.badge.badge-secondary Naval Patel
+											div
+												.badge.badge-danger CLOSED
+										.col-md-10
+											| Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+											
+									
+		.card.m-b-0.border-top
+			#headingTwo.card-header.bg-dark.text-white
+				h5.mb-0
+					a.collapsed(data-toggle='collapse', data-target='#collapseTwo', aria-expanded='false', aria-controls='collapseTwo')
+						i.m-r-5.fa.fa-check.text-success.pr-3(aria-hidden='true')
+						span Customer Query 2
+			#collapseTwo.collapse(aria-labelledby='headingTwo', data-parent='#accordionExample')
+				.card-body
+					| Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+		.card.m-b-0.border-top
+			#headingThree.card-header.bg-dark.text-white
+				h5.mb-0
+					a.collapsed(data-toggle='collapse', data-target='#collapseThree', aria-expanded='false', aria-controls='collapseThree')
+						i.m-r-5.fa.fa-check.text-warning.pr-3(aria-hidden='true')
+						span Customer Query 3
+			#collapseThree.collapse(aria-labelledby='headingThree', data-parent='#accordionExample')
+				.card-body
+					| Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+
+	// footer
+	// ==============================================================
+	footer.footer.text-center
+		| All Rights Reserved by #{sails.config.globals.customer_name} Designed and Developed by 
+		a(href='https://mobigic.com') Mobigic Technologies Pvt Ltd
+		| .
+	// ==============================================================
+	// End footer
+block specific-js
+	script(type='text/javascript').
+	script(src='/libs/inputmask/dist/min/jquery.inputmask.bundle.min.js')
+	script(src='/dist/js/pages/mask/mask.init.js')
+	script(src='/libs/select2/dist/js/select2.full.min.js')
+	script(src='/libs/select2/dist/js/select2.min.js')
+	script(src='/libs/jquery-asColor/dist/jquery-asColor.min.js')
+	script(src='/libs/jquery-asGradient/dist/jquery-asGradient.js')
+	script(src='/libs/jquery-asColorPicker/dist/jquery-asColorPicker.min.js')
+	script(src='/libs/jquery-minicolors/jquery.minicolors.min.js')
+	script(src='/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')
+		
+

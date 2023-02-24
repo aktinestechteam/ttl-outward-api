@@ -1,0 +1,26 @@
+0. Software versions to be used
+ - MongoDB 		4.0
+ - Sails 		1.0.2
+ - 
+
+1. In booklist entry the actual awb's jurney is from AMD (ahemadabad) but this same entry is operated i.e the flight from our system is from BOM (Mumbai). So here that awb source is adjusted to the BOM(Mumbai).
+
+2. in update-awb, there is a HACK, since we are not able to updateOne on the current sails version. The new version of sails has updateOne, but requires some work arounds to be done with helpers and other items. Kindly refer the release note of the newer version.
+
+For quick clearing of DB and restarting again... 
+ db.awb.drop(); db.awbinfo.drop(); db.awbleg.drop(); db.booklist.drop(); db.email.drop(); db.awblegop.drop(); db.ccaapproval.drop(); db.ccarequest.drop(); db.awbquery.drop(); db.awbclaim.drop();
+
+error "regeneratorruntime is not defined" is resolved by using this changes 
+ https://stackoverflow.com/questions/33527653/babel-6-regeneratorruntime-is-not-defined?page=1&tab=votes#tab-top
+ changes are done in bablerc file by adding 2 more peset values, entry point is a wepack.config so required files are added here and entry point is updated. npm i -D babel-core babel-polyfill babel-preset-es2015 babel-preset-stage-0 babel-loader this commad is used for package installation
+
+
+ after updationg to babel7
+ {error: Attempted to `require('/home/ajitkumar/SCode/reactOutwardcargo/outwardcargo/api/helpers/awb-legop-dispatcher.js')`, but an error occurred:
+Error: [BABEL] /home/ajitkumar/SCode/reactOutwardcargo/outwardcargo/api/helpers/awb-legop-dispatcher.js: The decorators plugin requires a 'decoratorsBeforeExport' option, whose value must be a boolean. If you want to use the legacy decorators semantics, you can set the 'legacy: true' option. (While processing: "/home/ajitkumar/SCode/reactOutwardcargo/outwardcargo/node_modules/@babel/plugin-proposal-decorators/lib/index.js")} ==> solution is to set the babel rc file with {
+	"presets": ["@babel/preset-env", "@babel/preset-react"],
+	"plugins": [
+		[
+		  "@babel/plugin-proposal-decorators", {"legacy": true }], ["@babel/plugin-proposal-class-properties", { "loose": true}]
+	  ]
+}

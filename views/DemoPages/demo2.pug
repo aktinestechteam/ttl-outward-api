@@ -1,0 +1,101 @@
+extends ../DemoPages/layout.pug
+
+block content
+	form(method='POST' action='/updateAwbWithOnHand', class="long-fields", enctype='multipart/form-data', onsubmit='return validateInputs();')
+		.card.bg-info
+			.col-12
+				label.control-label AWB Number
+				input#awbNoInput.form-control.form-white(placeholder='Enter AWB Number', type='text', name='awbNoInput', autocomplete="off" required='')
+			.col-12
+				label.control-label Station
+				input#stationInput.form-control.form-white(placeholder='Enter Operating Station', type='text', name='stationInput', autocomplete="off" required='' value='BOM')
+		br
+		button#createEntryBtn.btn.btn-primary.col-12(type='submit' ) Create Entry
+		label.control-label 
+			each awbinfo in awbinfos
+				div(onclick='$("#awbNoInput").val("' + awbinfo.awb_no + '")') #{awbinfo.awb_no} (#{awbinfo.station})
+			//- div(onclick='$("#awbNoInput").val("12542629613")') 12542629613
+			//- div(onclick='$("#awbNoInput").val("12523348625")') 12523348625
+			//- div(onclick='$("#awbNoInput").val("12523358462")') 12523358462
+			//- div(onclick='$("#awbNoInput").val("12523358473")') 12523358473
+			//- div(onclick='$("#awbNoInput").val("12542647150")') 12542647150
+			//- div(onclick='$("#awbNoInput").val("12523217692")') 12523217692 (50/600 case)
+			//- div(onclick='$("#awbNoInput").val("12523363104")') 12523363104
+			//- div(onclick='$("#awbNoInput").val("12523363955")') 12523363955 (removed from egm)
+
+		//- .card.bg-info
+		//- 	p 'below rows are to add awbleg model entry"
+		//- 	.card.bg-info
+		//- 		.row
+		//- 			.col-md-2
+		//- 				label.control-label Source Airport IATA
+		//- 				input#fromAirportInput.form-control.form-white(placeholder='Enter Source Airport', type='text', name='fromAirportInput', autocomplete="off" required='')
+
+						//- 			.col-md-2
+		//- 				label.control-label Destination Airport IATA
+		//- 				input#toAirportInput.form-control.form-white(placeholder='Enter Destination Airport' , type='text', name='toAirportInput', autocomplete="off" required='')
+
+		//- 			.col-md-2
+		//- 				label.control-label Pieces
+		//- 				input#piecesInput.form-control.form-white(placeholder='Enter Pieces', type='text', name='piecesInput', autocomplete="off" required='')
+
+		//- 			.col-md-2
+		//- 				label.control-label Weight
+		//- 				input#weightInput.form-control.form-white(placeholder='Enter Weight', type='text', name='weightInput', autocomplete="off" required='')
+
+		//- 			.col-md-2
+		//- 				label.control-label Select Flight
+		//- 				select#flightsSelector.select2.form-control.custom-select(placeholder='Select flight', type='text', name='flightsSelector', autocomplete="off")
+		//- 	.card.bg-info
+		//- 		.row
+
+	
+block pageScript
+	script(src="https://code.jquery.com/jquery-1.12.4.js")
+	script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+	script(type='text/javascript', src="/js/validation.js")
+	script.
+		let validation_rules = [
+				{tagid: 'awbNoInput',		regex_name: 'exact_x_digits', 	 errmsg: 'Please enter 11 digit awb no',x_count: 11, required: true},
+			];
+
+			function validateInputs() {
+				return validate(validation_rules);
+			}
+	//- script.
+	//- 	$("#awbNoInput").change(function(){
+	//- 		updateAb();
+	//- 	});
+
+	//- 	function updateAb(){
+	//- 		let awbNo =  $('#awbNoInput').val();
+	//- 		let queryParams = '&awbNo=' + awbNo ;
+	//- 		$.getJSON(window.location.protocol + "//" + window.location.host + '/getAwbDetails?' + queryParams, function(results, status) {
+	//- 				populateTheForm(results);
+	//- 		});
+	//- 	}
+
+	//- 	function populateTheForm(results) {
+	//- 		if(results == null) {
+	//- 			console.log('no record found. you can add this awb');
+	//- 		}
+	//- 		else {
+	//- 			console.log('you cannot add this awb');
+	//- 			alert('AWB already exist.');
+	//- 		}
+	//- 	}
+
+//- db.tempuser.insertMany([{email: "girija.sunil@ba.com", stations:"[BOM]", username: ["t47320"], departments: ["central_fin"], password: "123456"},{email: "laxman.rawat@ba.com", stations:"[BLR]", username: ["t98870"], departments: ["planner_ops"], password: "123456"},{email: "sheldron.pereira@ba.com", stations:"[BOM]", username: ["t111908"], departments: ["central_ops"], password: "123456"},{email: "chetan.saxena@ba.com", stations:"[DEL]", username: ["t117820"], departments: ["planner_ops"], password: "123456"},{email: "felsin.justus@ba.com", stations:"[MAA]", username: ["t421412"], departments: ["planner_ops"], password: "123456"},{email: "omprakash.dubey@ba.com", stations:"[DEL]", username: ["t422503"], departments: ["planner_ops"], password: "123456"},{email: "premraj.selvam@ba.com", stations:"[MAA]", username: ["t427134"], departments: ["planner_ops"], password: "123456"},]);
+//- db.tempuser.insertMany([{email: "rupak.chauhan@ba.com", stations:"[DEL]", username: ["t429874"], departments: ["Resigned"], password: "123456"},{email: "suresh.dumpala@ba.com", stations:"[HYD]", username: ["t445804"], departments: ["planner_ops"], password: "123456"},{email: "eustace.creado@ba.com", stations:"[BOM]", username: ["t452406"], departments: ["planner_ops"], password: "123456"},{email: "manjunatha.p@ba.com", stations:"[BLR]", username: ["t451955"], departments: ["planner_ops"], password: "123456"},{email: "girish.khona@ba.com", stations:"[BOM]", username: ["t453854"], departments: ["planner_ops"], password: "123456"},{email: "vinod.laxminarayan.sanga@ba.com", stations:"[HYD]", username: ["t454931"], departments: ["planner_ops"], password: "123456"},{email: "wayne.cabral@ba.com", stations:"[BOM]", username: ["t465601"], departments: ["central_ops"], password: "123456"},]);
+//- db.tempuser.insertMany([{email: "genevieve.menezes@ba.com", stations:"[BOM]", username: ["t465604"], departments: ["central_fin"], password: "123456"},{email: "bhaveen.vadodaria@ba.com", stations:"[BOM]", username: ["t466424"], departments: ["central_rec"], password: "123456"},{email: "aloysius.monteiro@ba.com", stations:"[BOM]", username: ["t469723"], departments: ["airport_ops"], password: "123456"},{email: "kunal.bangera@ba.com", stations:"[BOM]", username: ["t469724"], departments: ["planner_ops"], password: "123456"},{email: "sanoj.rajan@ba.com", stations:"[BOM]", username: ["t472713"], departments: ["central_rec"], password: "123456"},{email: "rajakumar.barnabas@ba.com", stations:"[MAA]", username: ["t473531"], departments: ["planner_ops"], password: "123456"},{email: "shiva.kumar.mangali@ba.com", stations:"[HYD]", username: ["t474562"], departments: ["planner_ops"], password: "123456"},]);
+//- db.tempuser.insertMany([{email: "moshin.shaikh@ba.com", stations:"[BOM]", username: ["t475830"], departments: ["planner_ops"], password: "123456"},{email: "chetan.patil@ba.com", stations:"[BOM]", username: ["t476680"], departments: ["planner_ops"], password: "123456"},{email: "manu.kumar@ba.com", stations:"[BLR]", username: ["t478758"], departments: ["planner_ops"], password: "123456"},{email: "hancy.dsouza@ba.com", stations:"[BOM]", username: ["t478400"], departments: ["planner_ops"], password: "123456"},{email: "mukesh.gupta@ba.com", stations:"[BOM]", username: ["T485831"], departments: ["central_ops"], password: "123456"},{email: "ganesh.rane@ba.com", stations:"[BOM]", username: ["N487167"], departments: ["central_rec"], password: "123456"},{email: "Pavan.singh@ba.com", stations:"[DEL]", username: ["T488983"], departments: ["planner_ops"], password: "123456"},]);
+//- db.tempuser.insertMany([{email: "Glendon.Dsilva@ba.com", stations:"[BOM]", username: ["N493794"], departments: ["central_fin"], password: "123456"},{email: "karan.jori@ba.com", stations:"[BOM]", username: ["N493793"], departments: ["central_fin"], password: "123456"},{email: "sachin.kandu@ba.com", stations:"[BOM]", username: ["N495193"], departments: ["central_fin"], password: "123456"},{email: "jyoti.devkar@ba.com", stations:"[BOM]", username: ["N495194"], departments: ["central_fin"], password: "123456"},{email: "roshan.serrao@ba.com", stations:"[BOM]", username: ["n495553"], departments: ["central_rec"], password: "123456"},{email: "sohail.ansari@ba.com", stations:"[BOM]", username: ["T496148"], departments: ["central_ops"], password: "123456"},{email: "mohammed.saad.shaikh@ba.com", stations:"[BOM]", username: ["N502171"], departments: ["central_rec"], password: "123456"},]);
+//- db.tempuser.insertMany([{email: "wilson.delboy@ba.com", stations:"[BOM]", username: ["T502169"], departments: ["central_ops"], password: "123456"},{email: "parvinder.singh@ba.com", stations:"[DEL]", username: ["T503164"], departments: ["planner_ops"], password: "123456"},{email: "athul.dev.kusansheela@ba.com", stations:"[HYD]", username: ["N502225"], departments: ["planner_ops"], password: "123456"},{email: "madesh.kumar.murugan@ba.com", stations:"[HYD]", username: ["T502278"], departments: ["planner_ops"], password: "123456"},{email: "tanuja.1.shamrao@ba.com", stations:"[BLR]", username: ["N502281"], departments: ["planner_ops"], password: "123456"},{email: "cneydon.dsouza@ba.com", stations:"[BOM]", username: ["T502287"], departments: ["central_ops"], password: "123456"},{email: "jackrus.jacob@ba.com", stations:"[BOM]", username: ["T501260"], departments: ["central_ops"], password: "123456"},]);
+//- db.tempuser.insertMany([{email: "james.dsouza@ba.com", stations:"[BOM]", username: ["T502289"], departments: ["central_ops"], password: "123456"},{email: "satish.chand.saini@ba.com", stations:"[DEL]", username: ["T503151"], departments: ["planner_ops"], password: "123456"},{email: "Thamarai.1.ebinezer@ba.com", stations:"[MAA]", username: ["t423450"], departments: ["planner_ops"], password: "123456"},{email: "jyotishmaan.bhagowaty@ba.com", stations:"[BOM]", username: ["n495406"], departments: ["central_rec"], password: "123456"},{email: "alric.rodrigues@ba.com", stations:"[BOM]", username: ["N497201"], departments: ["planner_ops"], password: "123456"},{email: "samir.shaikh@ba.com", stations:"[BOM]", username: ["T503914"], departments: ["central_ops"], password: "123456"},{email: "Aishwarya.patil@ba.com", stations:"[BOM]", username: ["N495407"], departments: ["central_fin"], password: "123456"},]);
+//- db.tempuser.insertMany([{email: "anish.muralidharan@ba.com", stations:"[BOM]", username: ["T503755"], departments: ["airport_ops"], password: "123456"},{email: "troysten.fernandes@ba.com", stations:"[BOM]", username: ["T503756"], departments: ["airport_ops"], password: "123456"},{email: "Safran.1.hussan@ba.com", stations:"[BLR]", username: ["N504156"], departments: ["planner_ops"], password: "123456"},{email: "nagabushanam.p@ba.com", stations:"[HYD]", username: ["T504436"], departments: ["planner_ops"], password: "123456"},{email: "shobanbabu.k@ba.com", stations:"[MAA]", username: ["T504636"], departments: ["planner_ops"], password: "123456"},{email: "nandish.a@ba.com", stations:"[BLR]", username: ["N504741"], departments: ["planner_ops"], password: "123456"},]);
+//- db.tempuser.insertMany([{email: "ajit.1.kumar@ba.com", stations:"[DEL]", username: ["N507320"], departments: ["airport_ops"], password: "123456"},{email: "harsh.yadav@ba.com", stations:"[DEL]", username: ["T507800"], departments: ["airport_ops"], password: "123456"},]);
+
+
+//- db.tempuser.insert({"username" : "medha", "password" : "123456", "email" : "medha@mobigic.com", "stations" : ["BLR", "BOM", "DEL", "HYD", "MAA"], "departments" : [ "PLANNER OPS", "AIRPORT OPS", "CENTRAL OPS", "CENTRAL FIN", "CENTRAL REC"], "allow_edit" : true, "createdAt" : 1633290189958, "updatedAt" : 1633290189958});
+//- db.tempuser.insert({"username" : "lawrence", "password" : "123456", "email" : "lawrence@mobigic.com", "stations" : ["BLR", "BOM", "DEL", "HYD", "MAA"], "departments" : [ "PLANNER OPS", "AIRPORT OPS", "CENTRAL OPS", "CENTRAL FIN", "CENTRAL REC"], "allow_edit" : true, "createdAt" : 1633290189958, "updatedAt" : 1633290189958});
+//- db.tempuser.insert({"username" : "bhavesh", "password" : "123456", "email" : "bhavesh@mobigic.com", "stations" : ["BLR", "BOM", "DEL", "HYD", "MAA"], "departments" : [ "PLANNER OPS", "AIRPORT OPS", "CENTRAL OPS", "CENTRAL FIN", "CENTRAL REC"], "allow_edit" : true, "createdAt" : 1633290189958, "updatedAt" : 1633290189958});

@@ -1,0 +1,65 @@
+extends ../DemoPages/layout.pug
+
+
+block content
+	h1 Demo page
+	p this is demo page for running test cases for excel file
+	div#flightlistUploadParent.input-group
+		.custom-file
+			input#flightlistUpload.custom-file-input(type='file',name= 'flightlistUpload')
+			label#flightlistUploadLabel.custom-file-label Choose flightlist
+		.input-group-append
+			button#flightlistUploadBtn.btn.btn-danger(onclick='uploadFlightlist()') Upload
+	
+block pageScript
+	script(type='text/javascript', src="/js/validation.js")
+	script.
+		function uploadFlightlist() {
+			let isValidatedFlightlist = validate(jsonForFlightlistValidation());
+			if(isValidatedFlightlist == true){
+				clearDisplayingError();
+				var myFormData = new FormData();
+				flightlistUpload = $('#flightlistUpload')
+				myFormData.append('fileupload', flightlistUpload.prop('files')[0]);
+				//myFormData.append('flightsSelector', $('#flightsSelector').val());
+				//myFormData.append('stationSourceInput', $('#stationSourceSelect').val());
+				//myFormData.append('stationDestinationInput', $('#stationDestinationSelect').val());
+
+				$.ajax({
+					url: '/uploadExcelFile',
+					type: 'POST',
+					processData: false, // important
+					contentType: false, // important
+					//dataType : 'json',
+					data: myFormData
+				}).done(function(data) {
+					console.log('uploading done');
+				}).fail(function(jqXHR, status) {
+					console.log(status)
+					console.log('uploading failed');
+				});
+			}
+		}
+
+		function jsonForFlightlistValidation(){
+			let validation_rules_flightlist = [];
+		
+			validation_rules_flightlist.push({tagid: 'flightlistUpload', regex_name: 'free_text', errmsg: 'Please Select Flightlist', show_error_on_tag_id: 'flightlistUploadParent', required: true});
+		
+			console.log(validation_rules_flightlist)
+			return validation_rules_flightlist;
+		}
+
+
+
+//- block content
+//- 	form(method="POST" action="/uploadExcelFile", class="long-fields", enctype='multipart/form-data')
+//- 		h1 Demo page
+//- 		p tis is demo page for running test cases for excel file
+//- 		.row
+//- 			input.form-control#fileupload(name='fileupload', type='file')
+//- 		br
+//- 		button#uploadBtn.btn.btn-primary.my-2.mx-5.col-1(type='submit' ) Upload
+	
+//- block pageScript
+//-fileupload using JQuery

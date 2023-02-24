@@ -1,0 +1,199 @@
+extends ../DemoPages/layout.pug
+
+
+block content
+	h1 Demo page
+	p this is demo page for running test cases for text file
+
+
+	.col-md-8.alert-light.border.border-warning
+		.card.p-2.my-2.alert-info.border.border-info
+			.row
+				.col-md-6.input-group
+					div.input-group-prepend
+						span.input-group-text.bg-danger
+							i.mdi.mdi-map-marker.text-light
+					select#stationSourceSelect.select2.form-control.custom-select.browser-default(type='text')
+						option(value='BOM') BOM
+						option(value='DEL') DEL
+					select#stationDestinationSelect.select2.form-control.custom-select.browser-default(type='text')
+						option(value='BOM') BOM
+						option(value='LHR') LHR
+				.col-md-6.input-group
+					div.input-group-prepend
+						span.input-group-text.bg-danger
+							i.fas.fa-plane.text-light
+					select#flightsSelector.select2.form-control.custom-select.my-auto(type='text', placeholder='Select flight',name='flightsSelector')
+			.row.mt-2
+				.col-md-6
+					div#egmUploadParent.input-group
+						.custom-file
+							input#egmUpload.custom-file-input(type='file',name= 'egmUpload')
+							label#egmUploadLabel.custom-file-label Choose EGM
+						.input-group-append
+							button#egmUploadBtn.btn.btn-danger Upload
+
+block pageScript
+	script(type='text/javascript', src="/js/validation.js")
+	script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js")
+	script(src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.core.min.js")
+	script.
+		$(document).ready(function(){
+			//- $('input[type="file"]').change(function(e){
+			//- 	//var fileName = e.target.files[0].name;
+			//- 	var myFile = $('#egmUpload').prop('files');
+			//- 	console.log(JSON.stringify(myFile));
+			//- });
+		});
+		
+		( function ( $ ) {
+			// Add click event handler to button
+			$( '#egmUpload' ).change( function () {
+				if ( ! window.FileReader ) {
+					return alert( 'FileReader API is not supported by your browser.' );
+				}
+				var $i = $( '#egmUpload' ), // Put file input ID here
+				input = $i[0]; // Getting the element from jQuery
+				if ( input.files && input.files[0] ) {
+					file = input.files[0]; // The file
+					fr = new FileReader(); // FileReader instance
+					fr.onload = function () {
+						// Do stuff on onload, use fr.result for contents of file
+						//$( '#file-content' ).append( $( '<div/>' ).html( fr.result ) )
+						let file_data = fr.result;
+						let arrayOfLines = file_data.match(/[^\r\n]+/g);
+						//console.log(arrayOfLines);
+						let testdigits = /\d{11}/;
+						for (let j = 0; j< arrayOfLines.length; j++){
+							if(testdigits.test(arrayOfLines[j])){
+								//console.log(arrayOfLines[j]);
+
+								let egm_record = {};
+								let egm_record_detail = arrayOfLines[j].split(' ')
+								//console.log(_.compact(line.slice(27).split(' ')));
+								let manifest_data =(_.compact(arrayOfLines[j].slice(27).split(' ')));
+								//console.log('pieces = '+ manifest_data[0]+' weight = '+ manifest_data[1]+ ' volume = '+ manifest_data[2]);
+								egm_record.awb_no = egm_record_detail[1];
+								egm_record.pieces = manifest_data[0];
+								egm_record.weight = manifest_data[1];
+								egm_record.volume = parseFloat(manifest_data[2]);
+								egm_record.class = manifest_data[2].charAt(manifest_data[2].length-1);
+								
+								console.log(egm_record);
+
+							}
+						}
+					};
+					fr.readAsText( file );
+					//fr.readAsDataURL( file );
+				} else {
+					// Handle errors here
+					alert( "File not selected or browser incompatible." )
+				}
+			} );
+		} )( jQuery );
+
+		function setEGMUploadFileName(fileName) {
+			$('#egmUploadLabel').text(fileName ? fileName : 'Choose EGM');
+		}
+		$('#addNewAwbBtn').click(function(){
+			let operatingStation =  $('#stationSourceSelect').val();
+			showAddNewAWBModal(operatingStation);
+		})
+		$('#egmUpload').change(function (e) {
+			var fileName = e.target.files[0].name;
+			setEGMUploadFileName(fileName);
+		});
+
+		function jsonForEGMValidation(){
+			let validation_rules_egm = [];
+		
+			validation_rules_egm.push({tagid: 'egmUpload', regex_name: 'free_text', errmsg: 'Please Select EGM', show_error_on_tag_id: 'egmUploadParent', required: true});
+		
+			console.log(validation_rules_egm)
+			return validation_rules_egm;
+		}
+
+		function uploadEGM() {
+			let isValidatedEGM = validate(jsonForEGMValidation());
+			if(isValidatedEGM == true){
+				clearDisplayingError();
+				var myFormData = new FormData();
+				egmUpload = $('#egmUpload')
+				myFormData.append('egmUpload', egmUpload.prop('files')[0]);
+				myFormData.append('flightsSelector', $('#flightsSelector').val());
+				myFormData.append('stationSourceInput', $('#stationSourceSelect').val());
+				myFormData.append('stationDestinationInput', $('#stationDestinationSelect').val());
+
+				$.ajax({
+					url: '/uploadEGMFile',
+					type: 'POST',
+					processData: false, // important
+					contentType: false, // important
+					//dataType : 'json',
+					data: myFormData
+				}).done(function(data) {
+					console.log('uploading done');
+					setEGMUploadFileName();
+					//refreshegm();
+				}).fail(function(jqXHR, status) {
+					console.log(status)
+					console.log('uploading failed');
+				});
+			}
+		}
+				let egmRecords;
+		$("#flightsSelector").on('change', function(){
+			//refreshegm();
+		});
+
+		$("#stationDestinationSelect").change(function(){
+			updateFlightsEGM();
+		});
+
+		function updateFlightsEGM(){
+			let source = $('#stationSourceSelect').val();
+			let destination = $('#stationDestinationSelect').val();
+
+			if (!source || !destination){
+				alert('source or destination is missing');
+			} else {
+				let queryParams = '&source=' + source + '&destination=' + destination;
+				$.getJSON(window.location.protocol + "//" + window.location.host + '/getFlightDetails?' + queryParams, function(results, status) {
+					populateAvailableFlightsForEGM(results);
+				});
+			}
+		}
+
+		function populateAvailableFlightsForEGM(results) {
+			if(results == null || results == '') {
+				console.log('no any record found');
+			}
+			else {
+				console.log('succccses');
+				console.log(results);
+				$('#flightsSelector').empty();
+				for(let i = 0; i < results.length; i++){
+					let displayDate = new Date (results[i].exactdeparturetime);
+					//console.log('displayDate++++++++++++ '+displayDate);
+					$('#flightsSelector').append($('<option ' + '/>', { 
+						value: results[i].flight_no+',' + results[i].exactdeparturetime + ',' + results[i].exactarrivaltime,
+						text : (results[i].flight_no+' '+ displayDate.getDate()  + "/" + (displayDate.getMonth()+1) + ' ' +displayDate.getHours() + ":" + displayDate.getMinutes())
+					}));
+				}
+				//refreshegm();
+			}
+		}
+
+
+//- block content
+//- 	form(method="POST" action="/uploadExcelFile", class="long-fields", enctype='multipart/form-data')
+//- 		h1 Demo page
+//- 		p tis is demo page for running test cases for excel file
+//- 		.row
+//- 			input.form-control#fileupload(name='fileupload', type='file')
+//- 		br
+//- 		button#uploadBtn.btn.btn-primary.my-2.mx-5.col-1(type='submit' ) Upload
+	
+//- block pageScript
+//-fileupload using JQuery

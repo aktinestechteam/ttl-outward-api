@@ -1,0 +1,81 @@
+extends ../DemoPages/layout.pug
+
+block content
+	div(method='POST' action='/uploadBooklistFile', class="long-fields", enctype='multipart/form-data' onSubmit='return check()')
+		h1 Demo page
+		p tis is demo page for running test cases
+		.row
+			input.form-control#fileupload(name='booklistUpload', type='file')
+		.row
+			.col-md-2
+				label.control-label Source
+				input#stationSourceInput.form-control.form-white(placeholder='Enter City Name', type='text', name='stationSourceInput', autocomplete="off" required='', value='BOM')
+			.col-md-2
+				label.control-label Destination
+				input#stationDestinationInput.form-control.form-white(placeholder='Enter City Name', type='text', name='stationDestinationInput', autocomplete="off" required='', value='LHR')
+			.col-md-3
+				label Select Flight
+				select#flightsSelector.select2.form-control.custom-select(placeholder='Select flight', type='text', name='flightsSelector', autocomplete="off")
+
+
+		br
+		button#uploadBtn.btn.btn-primary.my-2.mx-5.col-1(type='submit', onclick='check()' ) Upload
+	
+block pageScript
+	script(src="https://code.jquery.com/jquery-1.12.4.js")
+	script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+	
+	script.
+		function check(){
+			console.log('checking')
+			
+			var myFormData = new FormData();
+			booklistUpload = $('#fileupload')
+			myFormData.append('booklistUpload', booklistUpload.prop('files')[0]);
+
+			$.ajax({
+			  url: '/uploadBooklistFile',
+			  type: 'POST',
+			  processData: false, // important
+			  contentType: false, // important
+			  dataType : 'json',
+			  data: myFormData
+			});
+			return false;
+		}
+		
+	
+	script.
+		$("#stationDestinationInput").change(function(){
+			$("#flightsSelector").val([]);
+			$("#flightsSelector").text([]);
+			updateAb();
+		});
+
+		function updateAb(){
+			var source = $('#stationSourceInput').val();
+			var destination = $('#stationDestinationInput').val();
+			var date = $('#durationStartDate').val();
+
+			var queryParams = 'Date=' + date + '&source=' + source + '&destination=' + destination;
+			$.getJSON(window.location.protocol + "//" + window.location.host + '/getFlightDetails?' + queryParams, function(results, status) {
+					populateTheForm(results);
+			});
+		}
+
+		function populateTheForm(results) {
+			if(results == null || results == '') {
+			console.log('no any record found');
+			}
+			else {
+				console.log('succccses');
+				console.log(results);
+				for(let i = 0; i < results.length; i++){
+					let displayDate = new Date (results[i].exactdeparturetime);
+					$('#flightsSelector').append($('<option/>', { 
+						value: results[i].flight_no+',' + results[i].exactdeparturetime + ',' + results[i].exactarrivaltime,
+						text : (results[i].flight_no+' '+ displayDate.getDate()  + "/" + (displayDate.getMonth()+1) + ' ' +displayDate.getHours() + ":" + displayDate.getMinutes())
+					}));
+				}
+			}
+		}

@@ -1,0 +1,132 @@
+html
+head
+    meta(charset='UTF-8')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge')
+    meta(name='viewport' content='width=device-width, initial-scale=1.0')
+    // <link href="./index.css" rel="stylesheet">
+    style.
+    title History
+div(style='margin: 0px 50px;')
+    .modal-header(style='display: flex;justify-content:space-between')
+        h4.modal-title
+            span
+                i.fa.fa-delete
+            label#ccaRequestPendingModalEditTitle.ml-2 History
+    .modal-body
+        .col-12
+            table#table(border='1' style='width: 100%;border-collapse: collapse;')
+                thead
+                    tr
+                        //-th Included
+                        th Sr. No
+                        th Date
+                        th type
+                        th Data
+                tbody
+                    each obj, index in awbInfo
+                        tr
+                            td #{index+1}
+                            - let date = new Date(obj.createdAt)
+                            //-td #{date.getDate()+"/"+(date.getMonth() + 1)+"/"+date.getFullYear()+" Time: "+date.getHours()+":"+date.getMinutes()+ ":"+date.getSeconds()+ ":"+date.getMilliseconds()}
+                            td=date
+                            //- td #{sails.config.custom.getReadableDate(obj.createdAt, true)+ ":"+date.getSeconds()+ ":"+date.getMilliSeconds()}
+                            td #{obj.dataType}
+                            td(word-wrap="break-word")
+                                each key in Object.keys(obj)
+                                    case key
+                                        when "createdAt"
+                                        when "updatedAt"
+                                        when "planned_departure"
+                                        when "planned_arrival"
+                                        when "trigger_time"
+                                        when "acted_at_time"
+                                        when "cut_off_time"
+                                            div #{key} : 
+                                                span(style="background-color: pink") #{obj[key] == 0 ? 0 : new Date(obj[key])}
+                                        when "station"
+                                        when "from"
+                                        when "to"
+                                        when "src"
+                                        when "dest"
+                                            div #{key} : 
+                                                span(style="background-color: orange") #{obj[key]}
+                                        when "closing_status"
+                                        when "status"
+                                            div #{key} : 
+                                                case obj[key]
+                                                    when "DISCARDED"
+                                                        span(style="background-color: red") #{obj[key]}
+                                                    default
+                                                        span(style="background-color: yellow") #{obj[key]}
+                                        default
+                                            div #{key} : #{obj[key]}    
+                                    
+block pageScript
+    script(src="https://code.jquery.com/jquery-1.12.4.js")
+    script(src="https://code.jquery.com/ui/1.12.1/jquery-ui.js")
+    script(type="text/javascript" src="/TextHighlighter.min.js")
+    
+    script.
+        (function() {
+            var table = document.getElementById('table');
+            //var hltr = new TextHighlighter(table);
+        })();
+
+    //- removeBtn.addEventListener('click', function () {
+    //-     hltr.removeHighlights();
+    //- });
+    script.
+        $('#approvecca').on("click", function (){
+            var reason = $('#reason').val()
+            if($('#reason').val().length == 0){
+                alert("Please enter a valid reason")
+            }
+            else{
+                var url=window.location.toString()
+                url = url.split('/')
+                var id = url[4]
+                console.log(url)
+                var approvalUrl = "#{sails.config.custom.base_url}/ccaaprroval/"+id+"/approve"
+                console.log(approvalUrl)
+                $.ajax({
+                    url: approvalUrl,
+                    type: 'POST',
+                    processData: false, // important
+                    contentType: false, // important
+                    dataType : 'json',
+                    data: {reason: reason}
+                }).done(function(data) {
+                    alert(data)
+                }).fail(function(jqXHR, status) {
+                    alert("Approval Failed")
+                });
+            }
+            return true;
+        })
+        $('#rejectcca').on("click", function (){
+            var reason = $('#reason').val()
+            if($('#reason').val().length == 0){
+                alert("Please enter a valid reason")
+            }
+            else{
+                var url=window.location.toString()
+                url = url.split('/')
+                var id = url[4]
+                console.log(url)
+                var rejectUrl = "#{sails.config.custom.base_url}/ccaaprroval/"+id+"/reject"
+                console.log(rejectUrl)
+                $.ajax({
+                    url: rejectUrl,
+                    type: 'POST',
+                    processData: false, // important
+                    contentType: false, // important
+                    dataType : 'json',
+                    data: {reason: reason}
+                }).done(function(data) {
+                    alert(data)
+                }).fail(function(jqXHR, status) {
+                    alert("Reject Failed")
+                });
+            }
+            return true;
+        })

@@ -1,0 +1,116 @@
+doctype html
+html(lang="en", dir='ltr')
+
+	//- Variables to set active page in sidebar
+	block variables
+		- var activePage = 'dashboard'
+		- var activeGroup = 'none'
+
+	head
+		include ../includes/matrix_head.pug
+	body
+
+		#fakeloader(onclick='hideFakeLoader()', )
+		#socketFakeloader(onclick='checkConnection()')
+
+		//.preloader
+			.lds-ripple
+				.lds-pos
+				.lds-pos
+
+		div#main-wrapper
+			// Navbar
+			include ../includes/matrix_header.pug
+
+			// Sidebar menu
+			include ../includes/matrix_sidebar.pug
+
+			.page-wrapper.d-none
+				block content
+				//-footer.footer.text-center.fixed-bottom
+					| All Rights Reserved by #{sails.config.globals.customer_name} Designed and Developed by 
+					a(href='https://mobigic.com') Mobigic Technologies Pvt Ltd
+					| .
+
+			//- Javascripts
+			include ../includes/matrix_javascript.pug
+			// Page specific javascripts
+			block specific-js
+
+		// Google analytics script
+		// Fake Loader
+		//-script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+		script(src='/dist/js/fakeLoader.js')
+		script.
+			const toast = swal.mixin({
+				toast: true,
+				position: 'top-end',
+				showConfirmButton: false,
+				timer: 3000
+			});
+
+			function showFakeLoader2() {
+				$("#fakeloader").fadeIn();
+			}
+			function socketShowFakeLoader() {
+				$("#socketFakeloader").fadeIn();
+			}
+
+			function showFakeLoader(modalname, pagetoredirect) {
+				$('#'+modalname).modal('hide');
+				$("#fakeloader").fadeIn();
+				location.href = pagetoredirect;
+			}
+
+			$("#socketFakeloader").fakeLoader({
+				timeToHide: 0, //Time in milliseconds for fakeLoader disappear
+				zIndex: "999",//Default zIndex
+				spinner: "spinner1",//Options: 'spinner1', 'spinner2', 'spinner3', 'spinner4', 'spinner5', 'spinner6', 'spinner7'
+				bgColor: "#000000bb", //Hex, RGB or RGBA colors
+			});
+
+			$("#fakeloader").fakeLoader({
+				timeToHide: 0, //Time in milliseconds for fakeLoader disappear
+				zIndex: "999",//Default zIndex
+				spinner: "spinner6",//Options: 'spinner1', 'spinner2', 'spinner3', 'spinner4', 'spinner5', 'spinner6', 'spinner7'
+				bgColor: "#000000cc", //Hex, RGB or RGBA colors
+			});
+
+			function hideFakeLoader() {
+				mySocket.on('connect', async function onConnect () {
+					console.log("Socket Re connected!");
+					$("#socketFakeloader").fadeOut();
+				});
+			}
+
+			function hideFakeLoader2() {
+				$("#fakeloader").fadeOut();
+			}
+
+			function checkConnection() {
+				$("#fakeloader").fadeOut();
+			}
+						
+			//- var IDLE_TIMEOUT = 60; //seconds
+			//- var _idleSecondsCounter = 0;
+			//- document.onclick = function() {
+			//- 	_idleSecondsCounter = 0;
+			//- };
+			//- document.onmousemove = function() {
+			//- 	_idleSecondsCounter = 0;
+			//- };
+			//- document.onkeypress = function() {
+			//- 	_idleSecondsCounter = 0;
+			//- };
+			//- window.setInterval(CheckIdleTime, 1000);
+			//- 
+			//- function CheckIdleTime() {
+			//- 	_idleSecondsCounter++;
+			//- 	var oPanel = document.getElementById("SecondsUntilExpire");
+			//- 	if (oPanel)
+			//- 		oPanel.innerHTML = (IDLE_TIMEOUT - _idleSecondsCounter) + "";
+			//- 	if (_idleSecondsCounter >= IDLE_TIMEOUT) {
+			//- 		alert("Time expired!");
+			//- 		document.location.href = "/logout";
+			//- 	}
+			//- }

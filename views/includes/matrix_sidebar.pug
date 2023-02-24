@@ -1,0 +1,172 @@
+aside.left-sidebar(data-sidebarbg='skin5')
+	// Sidebar scroll
+	.scroll-sidebar
+		// Sidebar navigation
+		nav.sidebar-nav
+			ul#sidebarnav.p-t-30
+					//if(req.user.role === 'admin')
+					li.sidebar-item#menu_airportlist
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='/stations', aria-expanded='false')
+							i.mdi.mdi-airplane
+							span.hide-menu Stations
+					li.sidebar-item#menu_shccodes
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='/shccodes', aria-expanded='false')
+							i.mdi.mdi-pencil-box-outline
+							span.hide-menu SHC
+					li.sidebar-item#menu_planner
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='/planner', aria-expanded='false')
+							i.mdi.mdi-clock-fast
+							span.hide-menu Planner
+					li.sidebar-item#menu_reasons
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='/reasons', aria-expanded='false')
+							i.mdi.mdi-comment-multiple-outline
+							span.hide-menu Reasons
+					li.sidebar-item#menu_operation
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='/operation', aria-expanded='false')
+							i.fas.fa-users
+							span.hide-menu Operation
+					li.sidebar-item#menu_settings
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='/settings', aria-expanded='false')
+							i.mdi.mdi-currency-inr
+							span.hide-menu Settings
+					//-li.sidebar-item#menu_constants
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='/constants', aria-expanded='false')
+							i.mdi.mdi-settings
+							span.hide-menu Constants
+					//-li.sidebar-item#menu_consignees
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='/consignees', aria-expanded='false')
+							i.mdi.mdi-account-settings-variant
+							span.hide-menu Consignees
+					//-li.sidebar-item#menu_vendor
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='/getvendorlist', aria-expanded='false')
+							i.mdi.mdi-account-settings-variant
+							span.hide-menu Vendors
+					//-li.sidebar-item#menu_expense
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='/getexpenselist', aria-expanded='false')
+							i.mdi.mdi-account-settings-variant
+							span.hide-menu Expense Logs
+					//-li.sidebar-item#menu_budget
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='/getbudgetlist', aria-expanded='false')
+							i.mdi.mdi-account-settings-variant
+							span.hide-menu Budget Analyzer					
+					li.sidebar-item#menu_flights
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='/flights', aria-expanded='false')
+							i.mdi.mdi-airplane-takeoff
+							span.hide-menu Flights
+							
+					hr(style='border:1px solid white;', noshade)
+					li.sidebar-item
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='dashboard', aria-expanded='false')
+							i.mdi.mdi-view-dashboard
+							span.hide-menu Dashboard
+					li.sidebar-item
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='charts', aria-expanded='false')
+							i.mdi.mdi-chart-bar
+							span.hide-menu Charts
+					li.sidebar-item
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='widgets', aria-expanded='false')
+							i.mdi.mdi-chart-bubble
+							span.hide-menu Widgets
+					li.sidebar-item
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='tables', aria-expanded='false')
+							i.mdi.mdi-border-inside
+							span.hide-menu Tables
+					li.sidebar-item
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='grid', aria-expanded='false')
+							i.mdi.mdi-blur-linear
+							span.hide-menu Full Width
+					li.sidebar-item
+						a.sidebar-link.has-arrow.waves-effect.waves-dark(href='javascript:void(0)', aria-expanded='false')
+							i.mdi.mdi-receipt
+							span.hide-menu Forms 
+						ul.collapse.first-level(aria-expanded='false')
+							li.sidebar-item
+								a.sidebar-link(href='form-basic')
+									i.mdi.mdi-note-outline
+									span.hide-menu  Form Basic 
+							li.sidebar-item
+								a.sidebar-link(href='form-wizard')
+									i.mdi.mdi-note-plus
+									span.hide-menu  Form Wizard 
+					li.sidebar-item
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='pages-buttons', aria-expanded='false')
+							i.mdi.mdi-relative-scale
+							span.hide-menu Buttons
+					li.sidebar-item
+						a.sidebar-link.has-arrow.waves-effect.waves-dark(href='javascript:void(0)', aria-expanded='false')
+							i.mdi.mdi-face
+							span.hide-menu Icons 
+						ul.collapse.first-level(aria-expanded='false')
+							li.sidebar-item
+								a.sidebar-link(href='icon-material')
+									i.mdi.mdi-emoticon
+									span.hide-menu  Material Icons 
+							li.sidebar-item
+								a.sidebar-link(href='icon-fontawesome')
+									i.mdi.mdi-emoticon-cool
+									span.hide-menu  Font Awesome Icons 
+					li.sidebar-item
+						a.sidebar-link.waves-effect.waves-dark.sidebar-link(href='pages-elements', aria-expanded='false')
+							i.mdi.mdi-pencil
+							span.hide-menu Elements
+					li.sidebar-item
+						a.sidebar-link.has-arrow.waves-effect.waves-dark(href='javascript:void(0)', aria-expanded='false')
+							i.mdi.mdi-move-resize-variant
+							span.hide-menu Addons 
+						ul.collapse.first-level(aria-expanded='false')
+							li.sidebar-item
+								a.sidebar-link(href='index2')
+									i.mdi.mdi-view-dashboard
+									span.hide-menu  Dashboard-2 
+							li.sidebar-item
+								a.sidebar-link(href='pages-gallery')
+									i.mdi.mdi-multiplication-box
+									span.hide-menu  Gallery 
+							li.sidebar-item
+								a.sidebar-link(href='pages-calendar')
+									i.mdi.mdi-calendar-check
+									span.hide-menu  Calendar 
+							li.sidebar-item
+								a.sidebar-link(href='pages-invoice')
+									i.mdi.mdi-bulletin-board
+									span.hide-menu  Invoice 
+							li.sidebar-item
+								a.sidebar-link(href='pages-chat')
+									i.mdi.mdi-message-outline
+									span.hide-menu  Chat Option 
+					li.sidebar-item
+						a.sidebar-link.has-arrow.waves-effect.waves-dark(href='javascript:void(0)', aria-expanded='false')
+							i.mdi.mdi-account-key
+							span.hide-menu Authentication 
+						ul.collapse.first-level(aria-expanded='false')
+							li.sidebar-item
+								a.sidebar-link(href='/login')
+									i.mdi.mdi-all-inclusive
+									span.hide-menu  Login 
+							li.sidebar-item
+								a.sidebar-link(href='authentication-register')
+									i.mdi.mdi-all-inclusive
+									span.hide-menu  Register 
+					li.sidebar-item
+						a.sidebar-link.has-arrow.waves-effect.waves-dark(href='javascript:void(0)', aria-expanded='false')
+							i.mdi.mdi-alert
+							span.hide-menu Errors 
+						ul.collapse.first-level(aria-expanded='false')
+							li.sidebar-item
+								a.sidebar-link(href='error-403')
+									i.mdi.mdi-alert-octagon
+									span.hide-menu  Error 403 
+							li.sidebar-item
+								a.sidebar-link(href='error-404')
+									i.mdi.mdi-alert-octagon
+									span.hide-menu  Error 404 
+							li.sidebar-item
+								a.sidebar-link(href='error-405')
+									i.mdi.mdi-alert-octagon
+									span.hide-menu  Error 405 
+							li.sidebar-item
+								a.sidebar-link(href='error-500')
+									i.mdi.mdi-alert-octagon
+									span.hide-menu  Error 500 
+		// End Sidebar navigation
+	// End Sidebar scroll

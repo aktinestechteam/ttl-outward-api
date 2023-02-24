@@ -1,0 +1,107 @@
+html 
+    head 
+    body 
+        h1 Commands for #{awb_no}#{id}
+            button copy
+        h3 AWB Info
+        
+        p
+            div #{sails.config.custom.base_url}/sanitize/#{awb_no}/station
+            div #{sails.config.custom.base_url}/createRateCheck/#{awb_no}
+            div #{sails.config.custom.base_url}/changeAWBStation/#{awb_no}/station
+            div #{sails.config.custom.base_url}/changeAWBSrc/#{awb_no}/station
+            div #{sails.config.custom.base_url}/forceAWBToRCS/#{awb_no}
+            div #{sails.config.custom.base_url}/changeAWBPriorityClass/#{awb_no}/F
+
+        //- AWB INFO
+        div 
+            span db.awbinfo.find({awb_no: "#{awb_no}"})
+            button copy
+        div 
+            span db.awbinfo.update({awb_no: "#{awb_no}"}, {$set: {}})
+            button copy
+        div 
+            span db.awbinfo.update({_id: ObjectId("#{id}")}, {$set: {}})
+            button copy
+        div
+            span db.awbinfo.deleteOne({_id: ObjectId("#{id}")})
+        div
+            span db.awbinfo.deleteOne({_id: ObjectId("#{awb_no}")})
+
+        //- AWB LEG
+        h3 AWB Leg
+        div 
+            span db.awbleg.find({awb_no: "#{awb_no}"})
+            button copy
+            
+        div 
+            span db.awbleg.find({awb_no: "#{awb_no}"}, {status: 1, pieces: 1, weight: 1, from: 1})
+            button copy
+            
+        div 
+            span db.awbleg.find({_id: ObjectId("#{id}")})
+            button copy
+            
+        div 
+            span db.awbleg.update({_id: ObjectId("#{id}")}, {$set: {}})
+            button copy
+            
+        div 
+            span db.awbleg.find({booklist: ObjectId("#{id}")})
+            button copy
+            
+        div 
+            span db.awbleg.updateMany({booklist: ObjectId("#{id}"), status: "COMPLETED", void_on: 0, }, {$set: {actual_pieces_flown: 0, actual_weight_flown: 0, status: "PENDING"}})
+            button copy
+        div
+            span db.awbleg.deleteOne({_id: ObjectId("#{id}")})
+        div
+            span db.awbleg.deleteMany({awb_no: "#{awb_no}"})
+
+        h3 AWB Leg Ops
+        div 
+            span db.awblegop.find({awb_no: "#{awb_no}"})
+            button copy
+            
+        div 
+            span db.awblegop.find({awb_no: "#{awb_no}"}, {station: 1, opening_status: 1, opening_status: 1, department: 1})
+            button copy
+            
+        div 
+            span db.awblegop.find({_id: ObjectId("#{id}")})
+            button copy
+            
+        div 
+            span db.awblegop.update({_id: ObjectId("#{id}")}, {$set: {}})
+            button copy                
+        div
+            span db.awblegop.deleteOne({_id: ObjectId("#{id}")})
+        div
+            span db.awblegop.deleteMany({awb_no: "#{awb_no}"})
+
+        //- BOOKLIST
+        h3 Booklist
+        div 
+            span db.booklist.find({station: "#{id}"})
+            button copy
+
+        //-  DELETE
+        h3 Delete AWB Records 
+        div
+            span db.awb.deleteMany({awb_no: "#{awb_no}"}); db.awbinfo.deleteMany({awb_no: "#{awb_no}"}); db.awbleg.deleteMany({awb_no: "#{awb_no}"}); db.awblegop.deleteMany({awb_no: "#{awb_no}"})
+
+        script.
+            async function myFunction(value) {
+                try {
+                    const queryOpts = { name: 'clipboard-read', allowWithoutGesture: false };
+                    const permissionStatus = await navigator.permissions.query(queryOpts);
+                    console.log(permissionStatus.status);
+                    /* Copy the text inside the text field */
+                    navigator.clipboard.writeText(value);
+
+                    /* Alert the copied text */
+                    alert("Copied the text: " + value);
+                } catch (e) {
+                    console.log(e);
+                }
+            } 

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="mermaid.min.css">
+</head>
+<body>
+	<div class="mermaid1">
+		graph TD
+			p[Planner]
+			awbs[List of AWBs]
+			awb[Edit/Save AWB]
+			booklistcreate[Create Booking List]
+			addawb2booklist[Add AWB to Book List]
+			splitawb[Split AWB]
+			
+			p-->awbs
+			p-->awb
+			p-->booklistcreate
+			p-->addawb2booklist
+			p-->splitawb
+			
+	</div>
+	<div class="mermaid">
+	graph TD
+		subgraph AWB
+			awb1[ON_HAND_NO_BOOKING]
+			awb2[BOOKED_ON_HAND]
+			awb3[BOOKED_NOT_ON_HAND]
+			
+			awb1-->awb2
+			awb2-.->awb3
+			awb3-->awb1
+		end
+			
+		subgraph Rate Check
+			rc1[RATE_CHECK_PENDING]
+			rc2[RATE_CHECK_DONE]
+			rc3[RATE_CHECK_REFERRED]
+			rc4[RATE_CHECK_REJECTED]
+			rc5[RATE_CHECK_HOLD]
+			
+			awb2==>rc1
+			
+			rc1==>rc2
+			rc1-->rc3
+			rc1-->rc4
+			rc1-->rc5
+			
+			rc3==>rc2
+			rc3-->rc4
+			
+			rc5-->rc2
+			rc5-->rc4
+			
+			rc4-->awb2
+		end
+		subgraph FDC
+			fdc1[FDC_PENDING]
+			fdc2[FDC_DONE]
+			fdc3((FDC_LATE))
+			fdc4[FDC_HOLD]
+			fdc5[FDC_NOT_DONE]
+			
+			rc2==>fdc1
+			
+			fdc1==>fdc2
+			fdc1-->fdc4
+			fdc1-->fdc5
+			
+			fdc4-->awb1
+			fdc5-->awb1
+		end
+		fdc2[FDC_DONE]
+		
+		start[START]
+		start-->awb1
+		start-->awb2
+		start-->awb3
+		
+		classDef goodcase fill:lightgreen,stroke:#333,stroke-width:4px;
+		class awb2,rc1,rc2,fdc1,fdc2 goodcase;
+		
+	</div>
+	<div class="mermaid">
+	graph TD	
+		subgraph Manifest
+			manifest1>Uploading Manifest]
+			
+			fdc2==>manifest1
+		end
+		subgraph Pre-Alert
+			pre1[PRE_ALERT_PENDING]
+			pre2[PRE_ALERT_DONE]
+			
+			manifest1-->pre1
+			pre1-->pre2
+		end
+		subgraph CCA
+			cca1[CCA_PENDING]
+			cca2[CCA_SUBMITTED]
+			cca3[CCA_DONE]
+			
+			cca1-->cca3
+			cca1-->cca2
+			cca2-->cca3
+		end
+		subgraph EUICS
+			euics1[EUICS_PENDING]
+			euics2[EUICS_DONE]
+			euics3[EUICS_DONE_WITH_CCA]
+			
+			manifest1-->euics1
+			
+			euics1-->euics2
+			euics1-->euics3
+			
+			euics3-.->cca1
+		end
+		subgraph CAP-AWB
+			capa1[CAP_A_PENDING]
+			capa2[CAP_A_DONE]
+			capa3[CAP_A_DONE_WITH_CCA]
+			
+			manifest1-->capa1
+			
+			capa1-->capa2
+			capa1-->capa3
+			
+			capa3-.->cca1
+		end
+		subgraph E-AWB
+			eawb1[E_AWB_PENDING]
+			eawb2[E_AWB_DONE_EAWB]
+			eawb3[E_AWB_DONE_AWB]
+			eawb4[E_AWB_DONE_EAWB_WITH_CCA]
+			eawb5[E_AWB_DONE_AWB_WITH_CCA]
+			
+			manifest1-->eawb1
+			
+			eawb1-->eawb2
+			eawb1-->eawb3
+			eawb1-->eawb4
+			eawb1-->eawb5
+			
+			eawb4-.->cca1
+			eawb5-.->cca1
+			
+		end
+		
+		classDef goodcase fill:lightgreen,stroke:#333,stroke-width:4px;
+		class rc1,rc2,fdc1,fdc2,pre1,pre2,cca1,cca3,euics1,euics2,capa1,capa2,eawb1,eawb2,eawb3,eawb4,eawb5 goodcase;
+		
+	</div>
+	
+	<script src="mermaid.8.4.2.min.js">mermaid.initialize({
+		startOnLoad:true,
+		theme: 'forest',
+		themeCSS: ".node rect { fill: yellow; }",
+		flowchart:{
+			htmlLabels:true,
+			curve: 'basis'
+		},
+		sequence: {
+			useMaxWidth:false,
+			rightAngles: true,
+			showSequenceNumbers: true
+		}
+	});</script>
+</body>
+</html>
